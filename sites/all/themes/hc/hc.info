@@ -16,3 +16,4 @@ stylesheets[all][] = css/app.css
 scripts[] = js/jquery.js
 scripts[] = js/foundation.min.js
 scripts[] = js/app.js
+scripts[] = js/modernizr.foundation.js

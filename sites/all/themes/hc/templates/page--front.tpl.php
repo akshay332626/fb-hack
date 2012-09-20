@@ -71,14 +71,22 @@
   $facebook = new Facebook($config);
   $user_id = $facebook->getUser();
   
+  $relog=0;
   if($user_id) {
 
       // We have a user ID, so probably a logged in user.
       // If not, we'll get an exception, which we handle below.
       try {
-
-        $user_profile = $facebook->api('/me','GET');
-        echo "Name: " . $user_profile['name'];
+          ?>
+          
+          <script type="text/javascript">
+            <!--
+            window.location = "/node/add/cache"
+            //-->
+          </script>
+          
+          <?php
+          
 
       } catch(FacebookApiException $e) {
         // If the user is logged out, you can have a 
@@ -92,38 +100,22 @@
     }
     
     if($relog == 1){
-     ?>
-     
-    <div id="fb-root"></div>
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '140232946122321', // App ID
-          channelUrl : '//hide.mellenger.com', // Channel File
-          status     : true, // check login status
-          cookie     : true, // enable cookies to allow the server to access the session
-          xfbml      : true  // parse XFBML
-        });
     
-        // Additional initialization code here
-      };
+    $params = array(
+      'scope' => 'publish_actions',
+      'redirect_uri' => 'https://www.myapp.com/post_login_page'
+    );
     
-      // Load the SDK Asynchronously
-      (function(d){
-         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement('script'); js.id = id; js.async = true;
-         js.src = "//connect.facebook.net/en_US/all.js";
-         ref.parentNode.insertBefore(js, ref);
-       }(document));
-    </script>
+    $loginUrl = $facebook->getLoginUrl($params);
+    <?php
+        <script type="text/javascript">
+            <!--
+            window.location = "<?php print $loginUrl; ?>"
+            //-->
+          </script>
+    ?>
     
-    <div class="fb-login-button" scope="publish_actions">
-        Connect with Facebook
-     </div>
-     
-     <?php
-         }
+    }
   ?>
 
 

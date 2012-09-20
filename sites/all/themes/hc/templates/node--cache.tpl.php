@@ -158,13 +158,24 @@ function success(position) {
     center: clatlng,
     mapTypeControl: false,
     navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+
+
+  var goldStar = {
+    path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+    fillColor: "red",
+    fillOpacity: 1,
+    scale: 0.1,
+    strokeColor: "gold",
+    strokeWeight: 2
+  };
 
   var cmarker = new google.maps.Marker({
       position: clatlng, 
       map: map, 
+      icon: goldStar,
       title:"find this cache"
   });
 

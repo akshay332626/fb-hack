@@ -63,14 +63,51 @@
     <?php  /* FACEBOOK CONNECT */ 
         
 
-   $app_id = "140232946122321";
-   $app_secret = "a3f0f7dc94ca89e92dc513eb541e48dc";
-   $my_url = "http://hide.mellenger.com";
+   $config = array(
+    'appId' => '140232946122321',
+    'secret' => 'a3f0f7dc94ca89e92dc513eb541e48dc',
+  );
 
-?>
+  $facebook = new Facebook($config);
+  $user_id = $facebook->getUser();
+  
+  if($user_id) {
 
-<div id="fb-root"></div>
+      // We have a user ID, so probably a logged in user.
+      // If not, we'll get an exception, which we handle below.
+      try {
+
+        $user_profile = $facebook->api('/me','GET');
+        echo "Name: " . $user_profile['name'];
+
+      } catch(FacebookApiException $e) {
+        // If the user is logged out, you can have a 
+        // user ID even though the access token is invalid.
+        // In this case, we'll get an exception, so we'll
+        // just ask the user to login again here.
+        $relog=1;
+      }   
+    } else {
+       $relog=1;
+    }
+    
+    if($relog == 1){
+     ?>
+     
+    <div id="fb-root"></div>
     <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '140232946122321', // App ID
+          channelUrl : '//hide.mellenger.com', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+    
+        // Additional initialization code here
+      };
+    
       // Load the SDK Asynchronously
       (function(d){
          var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
@@ -79,41 +116,17 @@
          js.src = "//connect.facebook.net/en_US/all.js";
          ref.parentNode.insertBefore(js, ref);
        }(document));
-
-      // Init the SDK upon load
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '140232946122321', // App ID
-          channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
-          status     : true, // check login status
-          cookie     : true, // enable cookies to allow the server to access the session
-          xfbml      : true  // parse XFBML
-        });
-
-        // listen for and handle auth.statusChange events
-        FB.Event.subscribe('auth.statusChange', function(response) {
-          if (response.authResponse) {
-              console.log('test1');
-          } else {
-            // user has not auth'd your app, or is not logged into Facebook
-            console.log('test2');
-          }
-        });
-
-        // respond to clicks on the login and logout links
-        $('.fb-login-button').click(function(){
-           // FB.login();
-        });
-
-
-      } 
     </script>
-
+    
     <div class="fb-login-button" scope="publish_actions">
         Connect with Facebook
-      </div>
+     </div>
+     
+     <?php
+         }
+  ?>
 
-    
+
     
     
     

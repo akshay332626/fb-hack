@@ -148,61 +148,105 @@ drupal_add_html_head($og_lng, 'og_lng');
 ?>
 <script>  
 
+var umarker;
 
-function success(position) {
+var yourlat;
+var yourlng;
 
+var cachelat = <?php print $node->field_location['und'][0]['latitude'];?>;
+var cachelng = <?php print $node->field_location['und'][0]['longitude'];?>
 
-  var clatlng = new google.maps.LatLng(<?php print $node->field_location['und'][0]['latitude'];?>, <?php print $node->field_location['und'][0]['longitude'];?>);
-  var myOptions = {
-    zoom: 15,
-    center: clatlng,
-    mapTypeControl: false,
-    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-    mapTypeId: google.maps.MapTypeId.TERRAIN
-  };
-  var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+var found = false;
+
+  function success(position) {
 
 
-  var goldStar = {
-    path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
-    fillColor: "red",
-    fillOpacity: 1,
-    scale: 0.1,
-    strokeColor: "gold",
-    strokeWeight: 2
-  };
-
-  var cmarker = new google.maps.Marker({
-      position: clatlng, 
-      map: map, 
-      icon: goldStar,
-      title:"find this cache"
-  });
-
-  
-  console.log(position);
-
-  var ulatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  
-  var umarker = new google.maps.Marker({
-      position: ulatlng, 
-      map: map, 
-      title:"You are here! (at least within a "+position.coords.accuracy+" meter radius)"
-  });
+    var clatlng = new google.maps.LatLng(cachelat, cachelng);
+    var myOptions = {
+      zoom: 15,
+      center: clatlng,
+      mapTypeControl: false,
+      navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
 
 
+    var goldStar = {
+      path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+      fillColor: "red",
+      fillOpacity: 1,
+      scale: 0.25,
+      strokeColor: "gold",
+      strokeWeight: 2
+    };
 
-}
+    var cmarker = new google.maps.Marker({
+        position: clatlng, 
+        map: map, 
+        icon: goldStar,
+        title:"find this cache"
+    });
+
+    
+    console.log(position);
+
+    var ulatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    
+    umarker = new google.maps.Marker({
+        position: ulatlng, 
+        map: map, 
+        title:"You are here! (at least within a "+position.coords.accuracy+" meter radius)"
+    });
+
+  }
 
 function error(msg) {
   document.getElementById("mapcanvas").innerHTML("Please share your location");
   console.log(arguments);
 }
 
+function locUpdate(position){
+
+  var uplatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  umarker.setPosition(uplatlng);
+
+  yourlat = position.coords.latitude;
+  yourlng = position.coords.longitude;
+
+  reveal();
+
+}
+
+
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(success, error);
+  navigator.geolocation.watchPosition(locUpdate, error);
+
 } else {
   error('not supported');
+}
+
+
+function reveal(){
+
+  yourlat  = Math.floor(yourlat*10000)/10000;
+  cachelat = Math.floor(cachelat*10000)/10000;
+  yourlng  = Math.floor(yourlng*10000)/10000;
+  cachelng = Math.floor(cachelng*10000)/10000;
+
+$('body').append("<div>" + yourlat + ' =  ' + cachelat + " | " + yourlng + " = " + cachelng + "</div>");
+
+
+  if( (yourlat == cachelat) && (yourlng == cachelng) && !found ){
+
+    jQuery('#mapcanvas').slideUp();
+    jQuery('#themessage').slideDown();
+    jQuery('h2').append(" <span style='color:red'>Found!</span>");
+    found = true;
+
+  }
+
 }
 
 </script>
@@ -211,11 +255,7 @@ if (navigator.geolocation) {
 
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
-  <?php if (!$page): ?>
-    <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
-  <?php endif; ?>
-
-  <div class="content"<?php print $content_attributes; ?>>
+  <div id="themessage" class="content"<?php print $content_attributes; ?>>
     <?php
       // We hide the comments and links now so that we can render them later.
       hide($content['comments']);

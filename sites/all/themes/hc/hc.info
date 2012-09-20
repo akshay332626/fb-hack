@@ -1,0 +1,18 @@
+name = HideCache
+description = HideCache Theme
+core = 7.x
+engine = phptemplate
+
+regions[header] = Header
+regions[nav] = Navigation
+regions[content] = Content
+regions[left] = Left
+regions[right] = Right
+regions[footer] = Footer
+
+stylesheets[all][] = css/foundation.min.css
+stylesheets[all][] = css/app.css
+
+scripts[] = js/jquery.js
+scripts[] = js/foundation.min.js
+scripts[] = js/app.js

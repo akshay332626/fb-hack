@@ -13,14 +13,12 @@
   <?php echo $head; ?>
 
   <!-- Set the viewport width to device width for mobile -->
-  <meta name="viewport" content="width=device-width" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
   <title><?php echo $head_title; ?></title>
 
   <!-- Included CSS Files -->
   <?php echo $styles; ?>
-
-  <script src="<?php echo $directory; ?>/js/modernizr.foundation.js"></script>
 
   <!-- IE Fix for HTML5 Tags -->
   <!--[if lt IE 9]>
@@ -29,7 +27,7 @@
 
   <!-- Included JS Files -->
   <?php echo $scripts; ?>
-
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyA-Q-RL7EqqBD7Ni9xF1kYyaNgyLybhe6g&sensor=true"></script>
 </head>
 
 <body <?php print $attributes;?>>

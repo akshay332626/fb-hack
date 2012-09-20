@@ -111,7 +111,7 @@ $og_description = array(
   '#tag' => 'meta', 
   '#attributes' => array(
     'property' => 'og:description',
-    'content' => 'My Secret Cache',
+    'content' => 'find me!',
   ),
 );
 //   <meta property="og:image"                       content="https://your-great-image">
@@ -121,7 +121,7 @@ $og_lat = array(
   '#tag' => 'meta', 
   '#attributes' => array(
     'property' => 'your-og-app:location:latitude',
-    'content' => '',
+    'content' => $node->field_location['und'][0]['latitude'],
   ),
 );
 //   <meta property="your-og-app:location:longitude" content="-122.152659"> 
@@ -129,7 +129,7 @@ $og_lng = array(
   '#tag' => 'meta', 
   '#attributes' => array(
     'property' => 'your-og-app:location:longitude',
-    'content' => '',
+    'content' => $node->field_location['und'][0]['longitude'],
   ),
 );
 
@@ -146,6 +146,58 @@ drupal_add_html_head($og_lng, 'og_lng');
 
 
 ?>
+<script>  
+
+
+function success(position) {
+
+
+  var clatlng = new google.maps.LatLng(<?php print $node->field_location['und'][0]['latitude'];?>, <?php print $node->field_location['und'][0]['longitude'];?>);
+  var myOptions = {
+    zoom: 15,
+    center: clatlng,
+    mapTypeControl: false,
+    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+
+  var cmarker = new google.maps.Marker({
+      position: clatlng, 
+      map: map, 
+      title:"find this cache"
+  });
+
+  
+  console.log(position);
+
+  var ulatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  
+  var umarker = new google.maps.Marker({
+      position: ulatlng, 
+      map: map, 
+      title:"You are here! (at least within a "+position.coords.accuracy+" meter radius)"
+  });
+
+
+
+}
+
+function error(msg) {
+  document.getElementById("mapcanvas").innerHTML("Please share your location");
+  console.log(arguments);
+}
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success, error);
+} else {
+  error('not supported');
+}
+
+</script>
+
+<div id="mapcanvas" style="height:500px">you need gps</div>
+
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
   <?php if (!$page): ?>

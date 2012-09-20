@@ -1,5 +1,7 @@
 <?php
 
+    require_once('facebook-php-sdk/src/facebook.php');
+
 	/*
 	Preprocess function to determine number of columns for main content area
 	*/

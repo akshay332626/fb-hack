@@ -1,4 +1,7 @@
-
+<?php
+  setcookie("fb_access_token", $_GET['access_token'], time()+7200,"/",".mellenger.com");  /* expire in 1 hour */
+  //print $_GET['access_token'].'   :::    '.$_COOKIE['fb_access_token'];
+?>
 <div class="row">
   <div class="twelve columns">
     <?php if ( $page['header'] ): ?>

@@ -3,6 +3,7 @@
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# hidecache: http://ogp.me/ns/fb/hidecache#">
   <meta charset="utf-8" />
   <meta property="fb:app_id" content="140232946122321" />
+  <meta property="og:image"  content="http://hide.mellenger.com/mystery_box.jpg">
   <?php echo $head; ?>
 
   <!-- Set the viewport width to device width for mobile -->

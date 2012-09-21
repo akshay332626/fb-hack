@@ -1,4 +1,18 @@
+<?php
+    /* PHP FUNCTIONS*/
 
+    function curl_get_file_contents($URL) {
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_URL, $URL);
+        $contents = curl_exec($c);
+        $err  = curl_getinfo($c,CURLINFO_HTTP_CODE);
+        curl_close($c);
+        if ($contents) return $contents;
+        else return FALSE;
+      }
+
+?>
 <div class="row">
   <div class="twelve columns">
     <?php if ( $page['header'] ): ?>
@@ -60,63 +74,72 @@
     
     
     
-    <?php  /* FACEBOOK CONNECT */ 
+    <?php  /* FACEBOOK CONNECT */ ?>
+    
+     <div id="fb-root"></div>
+    <script>
+      // Load the SDK Asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         ref.parentNode.insertBefore(js, ref);
+       }(document));
+
+      // Init the SDK upon load
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '140232946122321', // App ID
+          channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+
+        // listen for and handle auth.statusChange events
+        FB.Event.subscribe('auth.statusChange', function(response) {
+          if (response.authResponse) {
+          console.log(response.authResponse.accessToken);
+            // user has auth'd your app and is logged into Facebook
+            FB.api('/me', function(me){
+              if (me.name) {
+                document.getElementById('auth-displayname').innerHTML = me.name;
+              }
+            })
+            document.getElementById('auth-loggedout').style.display = 'none';
+            document.getElementById('auth-loggedin').style.display = 'block';
+            window.location = "/node/add/cache?access_token="+response.authResponse.accessToken;
+          } else {
+            // user has not auth'd your app, or is not logged into Facebook
+            document.getElementById('auth-loggedout').style.display = 'block';
+            document.getElementById('auth-loggedin').style.display = 'none';
+          }
+        });
+
+        // respond to clicks on the login and logout links
         
+        
+        document.getElementById('auth-loginlink').addEventListener('click', function(){
+          FB.login();
+        });
+        document.getElementById('auth-logoutlink').addEventListener('click', function(){
+          FB.logout();
+        }); 
+      } 
+    </script>
 
-   $config = array(
-    'appId' => '140232946122321',
-    'secret' => 'a3f0f7dc94ca89e92dc513eb541e48dc',
-  );
+    <p>Login with facebook</p>
+      <div id="auth-status">
+        <div id="auth-loggedout">
+          <a href="#" id="auth-loginlink">Login</a>
+        </div>
+        <div id="auth-loggedin" style="display:none">
+          Hi, <span id="auth-displayname"></span>  
+        (<a href="#" id="auth-logoutlink">logout</a>)
+      </div>
+    </div>
 
-  $facebook = new Facebook($config);
-  $user_id = $facebook->getUser();
-  
-  $relog=0;
-  if($user_id) {
-
-      // We have a user ID, so probably a logged in user.
-      // If not, we'll get an exception, which we handle below.
-      try {
-          ?>
-          
-          <script type="text/javascript">
-            <!--
-            window.location = "/node/add/cache"
-            //-->
-          </script>
-          
-          <?php
-          
-
-      } catch(FacebookApiException $e) {
-        // If the user is logged out, you can have a 
-        // user ID even though the access token is invalid.
-        // In this case, we'll get an exception, so we'll
-        // just ask the user to login again here.
-        $relog=1;
-      }   
-    } else {
-       $relog=1;
-    }
-    
-    if($relog == 1){
-    
-    $params = array(
-      'scope' => 'publish_actions',
-      'redirect_uri' => 'https://www.myapp.com/post_login_page'
-    );
-    
-    $loginUrl = $facebook->getLoginUrl($params);
-    <?php
-        <script type="text/javascript">
-            <!--
-            window.location = "<?php print $loginUrl; ?>"
-            //-->
-          </script>
-    ?>
-    
-    }
-  ?>
 
 
     

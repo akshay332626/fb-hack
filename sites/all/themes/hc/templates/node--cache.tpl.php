@@ -163,7 +163,7 @@ var found = false;
 
     var clatlng = new google.maps.LatLng(cachelat, cachelng);
     var myOptions = {
-      zoom: 15,
+      zoom: 13,
       center: clatlng,
       mapTypeControl: false,
       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
@@ -219,15 +219,6 @@ function locUpdate(position){
 }
 
 
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(success, error);
-  navigator.geolocation.watchPosition(locUpdate, error);
-
-} else {
-  error('not supported');
-}
-
-
 function reveal(){
 
   var accuracy = 100;
@@ -247,6 +238,15 @@ function reveal(){
     jQuery('h2').append(" <span style='color:red'>Found!</span>");
     found = true;
 
+    $.ajax({
+        type: "GET",
+        url: "http://hide.mellenger.com/ogaction.php",
+        data: { type: "found", url: encodeURIComponent(window.location.href) }
+      }).done(function( msg ) {
+        console.log( "found: " + msg );
+    });
+
+
   }
 
 }
@@ -264,10 +264,44 @@ function reveal(){
         url: "http://hide.mellenger.com/ogaction.php",
         data: { type: "hide", url: encodeURIComponent(window.location.href) }
       }).done(function( msg ) {
-        console.log( "Data Saved: " + msg );
+        console.log( "hide: " + msg );
       });
 
+    }else{
+
+
+
+      $("#themessage").hide();
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+        navigator.geolocation.watchPosition(locUpdate, error);
+
+      } else {
+        error('not supported');
+      }
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   });
 
@@ -278,7 +312,7 @@ function reveal(){
 
 </script>
 
-<div id="mapcanvas" style="height:500px">you need gps</div>
+<div id="mapcanvas" style=""></div>
 
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 

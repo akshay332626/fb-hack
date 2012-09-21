@@ -87,6 +87,7 @@
 
 
   function success(position){
+    $("#field-location-add-more-wrapper").hide();
     $("#edit-field-location-und-0-locpick-user-latitude").val(position.coords.latitude);
     $("#edit-field-location-und-0-locpick-user-longitude").val(position.coords.longitude);
   }

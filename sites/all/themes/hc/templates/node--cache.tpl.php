@@ -120,7 +120,7 @@ $og_description = array(
 $og_lat = array(
   '#tag' => 'meta', 
   '#attributes' => array(
-    'property' => 'your-og-app:location:latitude',
+    'property' => 'og:latitude',
     'content' => $node->field_location['und'][0]['latitude'],
   ),
 );
@@ -128,7 +128,7 @@ $og_lat = array(
 $og_lng = array(
   '#tag' => 'meta', 
   '#attributes' => array(
-    'property' => 'your-og-app:location:longitude',
+    'property' => 'og:longitude',
     'content' => $node->field_location['und'][0]['longitude'],
   ),
 );
@@ -230,12 +230,14 @@ if (navigator.geolocation) {
 
 function reveal(){
 
-  yourlat  = Math.floor(yourlat*10000)/10000;
-  cachelat = Math.floor(cachelat*10000)/10000;
-  yourlng  = Math.floor(yourlng*10000)/10000;
-  cachelng = Math.floor(cachelng*10000)/10000;
+  var accuracy = 100;
 
-$('body').append("<div>" + yourlat + ' =  ' + cachelat + " | " + yourlng + " = " + cachelng + "</div>");
+  yourlat  = Math.floor(yourlat*accuracy)/accuracy;
+  cachelat = Math.floor(cachelat*accuracy)/accuracy;
+  yourlng  = Math.floor(yourlng*accuracy)/accuracy;
+  cachelng = Math.floor(cachelng*accuracy)/accuracy;
+
+//$('body').append("<div>" + yourlat + ' =  ' + cachelat + " | " + yourlng + " = " + cachelng + "</div>");
 
 
   if( (yourlat == cachelat) && (yourlng == cachelng) && !found ){

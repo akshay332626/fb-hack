@@ -94,7 +94,7 @@ $og_url = array(
   '#tag' => 'meta', 
   '#attributes' => array(
     'property' => 'og:url',
-    'content' => $node_url,
+    'content' => 'http://hide.mellenger.com' . $node_url,
   ),
 );
 
@@ -120,7 +120,7 @@ $og_description = array(
 $og_lat = array(
   '#tag' => 'meta', 
   '#attributes' => array(
-    'property' => 'og:latitude',
+    'property' => 'hidecache:location:latitude',
     'content' => $node->field_location['und'][0]['latitude'],
   ),
 );
@@ -128,7 +128,7 @@ $og_lat = array(
 $og_lng = array(
   '#tag' => 'meta', 
   '#attributes' => array(
-    'property' => 'og:longitude',
+    'property' => 'hidecache:location:longitude',
     'content' => $node->field_location['und'][0]['longitude'],
   ),
 );
@@ -250,6 +250,31 @@ function reveal(){
   }
 
 }
+
+
+(function ($) {
+
+
+  $(document).ready(function(){
+
+    if($(".messages.status").length > 0){
+
+      $.ajax({
+        type: "GET",
+        url: "http://hide.mellenger.com/ogaction.php",
+        data: { type: "hide", url: encodeURIComponent(window.location.href) }
+      }).done(function( msg ) {
+        console.log( "Data Saved: " + msg );
+      });
+
+    }
+
+  });
+
+
+
+})(jQuery);
+
 
 </script>
 
